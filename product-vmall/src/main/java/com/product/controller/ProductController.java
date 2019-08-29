@@ -38,11 +38,17 @@ public class ProductController {
     public static String evaluationUrl;
 
     public ProductController() {
-        this.userUrl = "http://127.0.0.1:8081";
-        this.productUrl = "http://127.0.0.1:8082";
-        this.shoppingcarUrl = "http://127.0.0.1:8083";
-        this.recordUrl = "http://127.0.0.1:8084";
-        this.evaluationUrl = "http://127.0.0.1:8085";
+//        this.userUrl = "http://127.0.0.1:8081";
+//        this.productUrl = "http://127.0.0.1:8082";
+//        this.shoppingcarUrl = "http://127.0.0.1:8083";
+//        this.recordUrl = "http://127.0.0.1:8084";
+//        this.evaluationUrl = "http://127.0.0.1:8085";
+
+        this.userUrl = "http://user:8081";
+        this.productUrl = "http://product:8082";
+        this.shoppingcarUrl = "http://shoppingcar:8083";
+        this.recordUrl = "http://order:8084";
+        this.evaluationUrl = "http://evaluation:8085";
         System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
     }
     

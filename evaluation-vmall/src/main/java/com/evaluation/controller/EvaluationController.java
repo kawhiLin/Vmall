@@ -8,6 +8,7 @@ import com.evaluation.service.EvaluationService;
 
 
 import com.evaluation.utils.ArgsBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -35,11 +36,17 @@ public class EvaluationController {
     RestTemplate restTemplate = new RestTemplate();
 
     public EvaluationController() {
-        this.userUrl = "http://127.0.0.1:8081";
-        this.productUrl = "http://127.0.0.1:8082";
-        this.shoppingcarUrl = "http://127.0.0.1:8083";
-        this.recordUrl = "http://127.0.0.1:8084";
-        this.evaluationUrl = "http://127.0.0.1:8085";
+//        this.userUrl = "http://127.0.0.1:8081";
+//        this.productUrl = "http://127.0.0.1:8082";
+//        this.shoppingcarUrl = "http://127.0.0.1:8083";
+//        this.recordUrl = "http://127.0.0.1:8084";
+//        this.evaluationUrl = "http://127.0.0.1:8085";
+
+        this.userUrl = "http://user:8081";
+        this.productUrl = "http://product:8082";
+        this.shoppingcarUrl = "http://shoppingcar:8083";
+        this.recordUrl = "http://order:8084";
+        this.evaluationUrl = "http://evaluation:8085";
 		System.out.println("url初始化：\n"+userUrl+"\n"+productUrl+"\n"+shoppingcarUrl+"\n"+recordUrl);
 	}
     
