@@ -1,18 +1,15 @@
 package com.evaluation;
 
-import org.apache.servicecomb.foundation.common.utils.Log4jUtils;
-import org.apache.servicecomb.springboot.starter.provider.EnableServiceComb;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.bind.annotation.RestController;
 
-@EnableJpaRepositories
 @SpringBootApplication(exclude= DispatcherServletAutoConfiguration.class)
-@EnableServiceComb
+@RestController
 public class EvaluationVmallApplication {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 //        Log4jUtils.init();
         SpringApplication.run(EvaluationVmallApplication.class, args);
     }

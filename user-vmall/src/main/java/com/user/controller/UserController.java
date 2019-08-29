@@ -4,16 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.user.service.UserService;
 import com.user.utils.ArgsBean;
 
-import org.apache.servicecomb.provider.rest.common.RestSchema;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.core.MediaType;
-
-@RestSchema(schemaId = "user")
-@RequestMapping(path = "/user", produces = MediaType.APPLICATION_JSON)
 @EnableAutoConfiguration
+@RestController
 public class UserController {
 
     @Autowired
@@ -26,11 +24,11 @@ public class UserController {
     public static String evaluationUrl;
 
     public UserController() {
-        this.userUrl = "cse://use/user";
-        this.productUrl = "cse://product/product";
-        this.shoppingcarUrl = "cse://shoppingcar/shoppingcar";
-        this.recordUrl = "cse://order/order";
-        this.evaluationUrl = "cse://evaluation/evaluation";
+        this.userUrl = "http://127.0.0.1:8081";
+        this.productUrl = "http://127.0.0.1:8082";
+        this.shoppingcarUrl = "http://127.0.0.1:8083";
+        this.recordUrl = "http://127.0.0.1:8084";
+        this.evaluationUrl = "http://127.0.0.1:8085";
         System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
     }
 
@@ -52,6 +50,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/getAllUser", method = RequestMethod.POST)
+//    @ResponseBody
     public String getAllUser() {
         System.out.println("我接收到了获取用户请求");
         return JSONObject.toJSONString(userService.getAllUser());

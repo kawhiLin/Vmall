@@ -9,7 +9,6 @@ import com.product.service.ProductService;
 import com.product.utils.ArgsBean;
 
 
-import org.apache.servicecomb.provider.rest.common.RestSchema;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 import javax.servlet.http.*;
-import javax.ws.rs.core.MediaType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,10 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 
-@RestSchema(schemaId = "product")
-@RequestMapping(path = "/product", produces = MediaType.APPLICATION_JSON)
 @EnableAutoConfiguration
-public class ProductController extends HttpServlet {
+@RestController
+public class ProductController {
     @Resource
     private ProductService productService;
 
@@ -41,11 +38,11 @@ public class ProductController extends HttpServlet {
     public static String evaluationUrl;
 
     public ProductController() {
-        this.userUrl = "cse://user/user";
-        this.productUrl = "cse://product/product";
-        this.shoppingcarUrl = "cse://shoppingcar/shoppingcar";
-        this.recordUrl = "cse://order/order";
-        this.evaluationUrl = "cse://evaluation/evaluation";
+        this.userUrl = "http://127.0.0.1:8081";
+        this.productUrl = "http://127.0.0.1:8082";
+        this.shoppingcarUrl = "http://127.0.0.1:8083";
+        this.recordUrl = "http://127.0.0.1:8084";
+        this.evaluationUrl = "http://127.0.0.1:8085";
         System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
     }
     

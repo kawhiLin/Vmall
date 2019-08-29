@@ -8,18 +8,11 @@ import com.evaluation.service.EvaluationService;
 
 
 import com.evaluation.utils.ArgsBean;
-import org.apache.servicecomb.provider.rest.common.RestSchema;
-import org.apache.servicecomb.provider.springmvc.reference.RestTemplateBuilder;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import javax.ws.rs.core.MediaType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,8 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestSchema(schemaId = "evaluation")
-@RequestMapping(path = "/evaluation", produces = MediaType.APPLICATION_JSON)
+@RestController
 @EnableAutoConfiguration
 public class EvaluationController {
     @Resource
@@ -40,14 +32,14 @@ public class EvaluationController {
     public static String recordUrl;
     public static String evaluationUrl;
 
-    RestTemplate restTemplate = RestTemplateBuilder.create();
+    RestTemplate restTemplate = new RestTemplate();
 
     public EvaluationController() {
-        this.userUrl = "cse://use/user";
-        this.productUrl = "cse://product/product";
-        this.shoppingcarUrl = "cse://shoppingcar/shoppingcar";
-        this.recordUrl = "cse://order/order";
-        this.evaluationUrl = "cse://evaluation/evaluation";
+        this.userUrl = "http://127.0.0.1:8081";
+        this.productUrl = "http://127.0.0.1:8082";
+        this.shoppingcarUrl = "http://127.0.0.1:8083";
+        this.recordUrl = "http://127.0.0.1:8084";
+        this.evaluationUrl = "http://127.0.0.1:8085";
 		System.out.println("url初始化：\n"+userUrl+"\n"+productUrl+"\n"+shoppingcarUrl+"\n"+recordUrl);
 	}
     

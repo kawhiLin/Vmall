@@ -1,10 +1,9 @@
 package com.record.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import com.record.entity.Product;
+
 import com.record.entity.ShoppingRecord;
 
 
@@ -12,38 +11,26 @@ import com.record.service.ShoppingRecordService;
 
 
 import com.record.utils.ArgsBean;
-import io.swagger.models.auth.In;
-import org.apache.servicecomb.provider.rest.common.RestSchema;
-import org.apache.servicecomb.provider.springmvc.reference.RestTemplateBuilder;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import javax.ws.rs.core.MediaType;
 
-
-import java.awt.print.PrinterGraphics;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-@RestSchema(schemaId = "order")
-@RequestMapping(path = "/order", produces = MediaType.APPLICATION_JSON)
+@RestController
 @EnableAutoConfiguration
 public class ShoppingRecordController {
 
 	@Resource
 	private ShoppingRecordService shoppingRecordService;
 
-	private static RestTemplate restTemplate = RestTemplateBuilder.create();
+	private static RestTemplate restTemplate = new RestTemplate();
 
 	public static String userUrl;
 	public static String productUrl;
@@ -53,11 +40,11 @@ public class ShoppingRecordController {
 	private static String exporterUrl;
 
     public ShoppingRecordController() {
-		this.userUrl = "cse://user/user";
-		this.productUrl = "cse://product/product";
-		this.shoppingcarUrl = "cse://shoppingcar/shoppingcar";
-		this.recordUrl = "cse://order/order";
-		this.evaluationUrl = "cse://evaluation/evaluation";
+        this.userUrl = "http://127.0.0.1:8081";
+        this.productUrl = "http://127.0.0.1:8082";
+        this.shoppingcarUrl = "http://127.0.0.1:8083";
+        this.recordUrl = "http://127.0.0.1:8084";
+        this.evaluationUrl = "http://127.0.0.1:8085";
 		this.exporterUrl = "http://127.0.0.1:8099/hello";
 		System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
 	}

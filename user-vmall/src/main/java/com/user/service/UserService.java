@@ -10,7 +10,7 @@ import com.user.repository.UserDetailRepository;
 import com.user.repository.UserRepository;
 import com.user.utils.ArgsBean;
 import com.user.utils.Response;
-import org.apache.servicecomb.provider.springmvc.reference.RestTemplateBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,7 +26,7 @@ public class UserService {
     @Autowired
     private UserDetailRepository userDetailRepository;
 
-    private static RestTemplate restTemplate = RestTemplateBuilder.create();
+    private static RestTemplate restTemplate = new RestTemplate();
 
     public User getUserByName(String name){
         return userRepository.getUserByNameOrEmail(name);

@@ -9,7 +9,6 @@ import com.product.repository.ProductRepository;
 import com.product.utils.ArgsBean;
 import com.product.utils.Response;
 
-import org.apache.servicecomb.provider.springmvc.reference.RestTemplateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,7 +22,7 @@ public class  ProductService {
     @Autowired
     ProductRepository productRepository;
 
-    private static RestTemplate restTemplate = RestTemplateBuilder.create();
+    private static RestTemplate restTemplate = new RestTemplate();
 
     public Map<String, Object> getAllProduct(){
         Iterator<Product> iterator = productRepository.findAll().iterator();

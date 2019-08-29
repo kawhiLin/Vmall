@@ -48,11 +48,16 @@ public class PagesController {
 //        已有单独的Pod去初始化
           InitDB.connmysql();
 //        System.out.println("数据库初始化");
-        this.userUrl = "cse://user/user";
-        this.productUrl = "cse://product/product";
-        this.shoppingcarUrl = "cse://shoppingcar/shoppingcar";
-        this.recordUrl = "cse://order/order";
-        this.evaluationUrl = "cse://evaluation/evaluation";
+//        this.userUrl = "cse://user/user";
+//        this.productUrl = "cse://product/product";
+//        this.shoppingcarUrl = "cse://shoppingcar/shoppingcar";
+//        this.recordUrl = "cse://order/order";
+//        this.evaluationUrl = "cse://evaluation/evaluation";
+        this.userUrl = "http://127.0.0.1:8081";
+        this.productUrl = "http://127.0.0.1:8082";
+        this.shoppingcarUrl = "http://127.0.0.1:8083";
+        this.recordUrl = "http://127.0.0.1:8084";
+        this.evaluationUrl = "http://127.0.0.1:8085";
         System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
     }
     // 临时策略：当请求发送到新的web实例时，检查redis中是否存有该sessionID，有则将userinfo置入到httpsession中

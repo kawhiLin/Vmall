@@ -7,7 +7,6 @@ import com.record.entity.Product;
 import com.record.entity.ShoppingRecord;
 import com.record.repository.RecordRepository;
 import com.record.utils.ArgsBean;
-import org.apache.servicecomb.provider.springmvc.reference.RestTemplateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +20,7 @@ public class ShoppingRecordService {
     @Autowired
     RecordRepository recordRepository;
 
-    private static RestTemplate restTemplate = RestTemplateBuilder.create();
+    private static RestTemplate restTemplate = new RestTemplate();
 
     @Transactional
     public Map<String, Object> addShoppingRecord(ArgsBean argsBean){
