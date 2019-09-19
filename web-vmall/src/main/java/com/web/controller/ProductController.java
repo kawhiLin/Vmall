@@ -28,7 +28,7 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class ProductController {
 
-    private static RestTemplate restTemplate =  new RestTemplate();
+    private RestTemplate restTemplate =  new RestTemplate();
 
     @RequestMapping(value = "/getAllProducts", method = RequestMethod.POST)
     @ResponseBody
@@ -53,6 +53,7 @@ public class ProductController {
         ArgsBean argsBean = new ArgsBean();
         argsBean.setMapString(JSONObject.toJSONString(map));
         String res = restTemplate.postForObject(url,argsBean,String.class);
+
 
         JSONObject productJsonString = JSONObject.parseObject(res);
         Response response = JSONObject.toJavaObject(productJsonString, Response.class);

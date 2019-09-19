@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,6 +22,99 @@ import org.springframework.web.client.RestTemplate;
 public class RecordController {
 
     private static RestTemplate restTemplate =  new RestTemplate();
+	private String makeFault_instanceIP = null;
+
+    private boolean isTestingTPS = false;
+
+    class MutliThread  implements Runnable{
+        @Override
+        public void run(){
+            //这里实现http请求
+            System.out.println("http request send!");
+            addShoppingRecord(1,1,1);
+        }
+    }
+
+    //模拟故障
+    @RequestMapping(value = "/makeFault",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> makeFault(String instanceIP){
+
+        String url = "http://"+instanceIP+":8084/order/makeFault";
+        System.out.println("makeFault:"+url);
+        try{
+            this.makeFault_instanceIP = instanceIP;
+            restTemplate.postForObject(url,null,String.class);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Map<String,Object> res = new HashMap<String,Object>();
+            res.put("result","failed");
+            System.out.println("makeFault failed, request error");
+            return res;
+        }
+        System.out.println("makeFault success");
+        Map<String,Object> res = new HashMap<String,Object>();
+        res.put("result","success");
+        return res;
+    }
+
+    //恢复故障
+    @RequestMapping(value = "/stopFault",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> stopFault(){
+        Map<String,Object> res = new HashMap<String,Object>();
+        if (makeFault_instanceIP==null){
+            res.put("result","instanceIP is null");
+            return res;
+        }
+
+        String url = "http://"+this.makeFault_instanceIP+":8084/order/stopFault";
+        System.out.println("stopFault:"+url);
+        try{
+            restTemplate.postForObject(url,null,String.class);
+        }catch (Exception e){
+            e.printStackTrace();
+            res.put("result","requst error");
+            return res;
+        }
+
+        res.put("result","success");
+        return res;
+    }
+
+// 压测
+    @RequestMapping(value = "/startTestTPS",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> testTPS(int TPSNum){
+        isTestingTPS = true;
+        int j = 0;
+
+        while (isTestingTPS){
+            try {
+                ExecutorService service = Executors.newFixedThreadPool(TPSNum);//TPSNum是线程数
+                for (int i = 0; i < TPSNum && isTestingTPS; i++){
+                    System.out.println(j);
+                    j ++;
+                    service.execute(new MutliThread());
+                }
+                service.shutdown();
+
+                Thread.sleep(1000);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+            return null;
+    }
+    @RequestMapping(value = "/stopTestTPS",method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String,Object> stopTestTPS(){
+        isTestingTPS = false;
+        System.out.println("stop test");
+        return null;
+
+    }
 
     @RequestMapping(value = "/addShoppingRecord",method = RequestMethod.POST)
     @ResponseBody
@@ -34,8 +130,8 @@ public class RecordController {
         String res = restTemplate.postForObject(url,argsBean,String.class);
 
         //删除购物车记录
-        ShoppingcarController shoppingcarController = new ShoppingcarController();
-        shoppingcarController.deleteShoppingCar(userId,productId);
+        //ShoppingcarController shoppingcarController = new ShoppingcarController();
+        //shoppingcarController.deleteShoppingCar(userId,productId);
 
         System.out.println("----res:\n"+res);
         Map resultMap = (Map)JSON.parse(res);

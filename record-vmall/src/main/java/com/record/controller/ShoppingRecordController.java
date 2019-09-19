@@ -22,6 +22,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
 @EnableAutoConfiguration
@@ -31,6 +33,7 @@ public class ShoppingRecordController {
 	private ShoppingRecordService shoppingRecordService;
 
 	private static RestTemplate restTemplate = new RestTemplate();
+	private boolean isFault = false;
 
 	public static String userUrl;
 	public static String productUrl;
@@ -48,23 +51,70 @@ public class ShoppingRecordController {
 
 		this.userUrl = "http://user:8081";
 		this.productUrl = "http://product:8082";
-		this.shoppingcarUrl = "http://shoppingcar:8083";
+		this.shoppingcarUrl = "http://shoppingcart:8083";
 		this.recordUrl = "http://order:8084";
 		this.evaluationUrl = "http://evaluation:8085";
+		this.exporterUrl = "http://127.0.0.1:8099/hello";
 		System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
 	}
 
+
+	class MutliThread  implements Runnable{
+		@Override
+		public void run(){
+			try {
+				// 处理connect exporter异常
+				String res = restTemplate.getForObject(exporterUrl,String.class);
+				System.out.println("INFO ----add ordd, send to exporter. res:\n" + res);
+			}catch (Exception e){
+				System.out.println("ERROR ----add ordd, send to exporter failed!");
+			}
+		}
+
+	}
+
+	// 开启模拟故障，设置故障开关为true
+	@RequestMapping(value = "/makeFault", method = RequestMethod.POST)
+	public String makeFault() {
+		isFault = true;
+		System.out.println("make fault");
+		return null;
+	}
+
+	// 恢复故障，设置故障开关为false
+	@RequestMapping(value = "/stopFault", method = RequestMethod.POST)
+	public String stopFault() {
+		isFault = false;
+		System.out.println("stop fault");
+		return null;
+	}
+	// 健康检查接口
+	@RequestMapping(value = "/healthCheck", method = RequestMethod.GET)
+	public String healthCheck() {
+		if (isFault){
+			// 人为抛出异常
+			if (isFault)   {
+				System.out.println("[ERROR]Server error message is: Order Not Found");
+//				throw new InvocationException(503, "", "Order Not Found");
+				throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+			}
+
+		}
+		return null;
+	}
+
+
 	@RequestMapping(value = "/addShoppingRecord", method = RequestMethod.POST)
 	public String addShoppingRecord(@RequestBody ArgsBean argsBean) {
-    	// 统计add订单qps，请求到exporter
-		// String res = restTemplate.postForObject(url,argsBean,String.class);
+		// 统计add订单qps，请求到exporter 转移到子线程处理
 		try {
-			// 处理connect exporter异常
-			String res = restTemplate.getForObject(this.exporterUrl,String.class);
-			System.out.println("----add ordd, send to exporter. res:\n" + res);
-		}catch (Exception e){
-			System.out.println("ERROR ----add ordd, send to exporter failed!");
+			ExecutorService service = Executors.newFixedThreadPool(1);//TPSNum是线程数
+			service.execute(new MutliThread());
+			service.shutdown();
+		}catch (Exception e) {
+			System.out.println("service.execute(new MutliThread()) failed:" + e.getMessage());
 		}
+
 
 
 
@@ -93,12 +143,21 @@ public class ShoppingRecordController {
 	}
 
 	@RequestMapping(value = "/getShoppingRecords", method = RequestMethod.POST)
-	public String getShoppingRecords(@RequestBody ArgsBean argsBean) {
+	public String getShoppingRecords(@RequestBody ArgsBean argsBean){
+		//if (isFault) throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+		if (isFault)   {
+			System.out.println("[ERROR]Server error message is: Order Not Found");
+			throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+		}
 		Map map = (Map) JSONObject.parse(argsBean.getMapString());
 		//TODO 异常处理
 		String userId = (String)map.get("userId");
 
 		List<ShoppingRecord> shoppingRecordList = shoppingRecordService.getShoppingRecords(Integer.valueOf(userId));
+		//默认最多显示15条记录
+		if (shoppingRecordList.size()>=15){
+			shoppingRecordList =  shoppingRecordList.subList(0,15);
+		}
 		String shoppingRecords = JSONArray.toJSONString(shoppingRecordList);
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("result", shoppingRecords);
@@ -121,7 +180,10 @@ public class ShoppingRecordController {
 
 	@RequestMapping(value = "/getAllShoppingRecords", method = RequestMethod.POST)
 	public String getAllShoppingRecords() {
-
+		if (isFault)   {
+			System.out.println("[ERROR]Server error message is: Order Not Found");
+			throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+		}
 		List<ShoppingRecord> shoppingRecordList = shoppingRecordService.getAllShoppingRecords();
 		String shoppingRecords = JSONArray.toJSONString(shoppingRecordList);
 		Map<String, Object> resultMap = new HashMap<String, Object>();

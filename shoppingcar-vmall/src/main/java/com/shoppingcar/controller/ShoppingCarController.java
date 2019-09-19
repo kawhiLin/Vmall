@@ -49,7 +49,7 @@ public class ShoppingCarController {
 
         this.userUrl = "http://user:8081";
         this.productUrl = "http://product:8082";
-        this.shoppingcarUrl = "http://shoppingcar:8083";
+        this.shoppingcarUrl = "http://shoppingcart:8083";
         this.recordUrl = "http://order:8084";
         this.evaluationUrl = "http://evaluation:8085";
         System.out.println("url初始化：\n" + userUrl + "\n" + productUrl + "\n" + shoppingcarUrl + "\n" + recordUrl + "\n"+ evaluationUrl);
