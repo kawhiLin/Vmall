@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import javax.servlet.http.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,31 +55,32 @@ public class ProductController {
         return JSONObject.toJSONString(productService.getAllProduct());
     }
 
-    @RequestMapping(value = "/updateProductCounts", method = RequestMethod.POST)
-    public String updateProductCounts(@RequestBody ArgsBean argsBean){
-        return JSONObject.toJSONString(productService.updateProductCounts(argsBean));
-    }
+    //没用到？
+//    @RequestMapping(value = "/updateProductCounts", method = RequestMethod.POST)
+//    public String updateProductCounts(@RequestBody ArgsBean argsBean){
+//        return JSONObject.toJSONString(productService.updateProductCounts(argsBean));
+//    }
 
 
-    @RequestMapping(value = "/deleteProduct", method = RequestMethod.POST)
-    public String deleteProduct(@RequestBody ArgsBean argsBean) {
-        return JSONObject.toJSONString(productService.deleteProduct(argsBean));
-    }
-
-    @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-    public String addProduct(@RequestBody ArgsBean argsBean) {
-        return JSONObject.toJSONString(productService.addProduct(argsBean));
-    }
+//    @RequestMapping(value = "/deleteProduct", method = RequestMethod.POST)
+//    public String deleteProduct(@RequestBody ArgsBean argsBean) {
+//        return JSONObject.toJSONString(productService.deleteProduct(argsBean));
+//    }
+//
+//    @RequestMapping(value = "/addProduct", method = RequestMethod.POST)
+//    public String addProduct(@RequestBody ArgsBean argsBean) {
+//        return JSONObject.toJSONString(productService.addProduct(argsBean));
+//    }
 
 
 
     @RequestMapping(value = "/productDetail", method = RequestMethod.POST)
-    public String productDetail(@RequestBody ArgsBean argsBean) {
-        Product product = productService.getProductById(argsBean);
+    public Map<String, Object> productDetail(int id) {
+        Product product = productService.getProductById(id);
         Map<String,Object> resultMap = new HashMap<String,Object>();
         resultMap.put("result","success");
         resultMap.put("productDetail",product);
-        return JSONObject.toJSONString(resultMap);
+        return resultMap;
     }
 
 
@@ -97,13 +96,13 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/getProductById", method = RequestMethod.POST)
-    public String getProductById(@RequestBody ArgsBean argsBean) {
-        Product product = productService.getProductById(argsBean);
+    public Map<String, Object> getProductById(int id) {
+        Product product = productService.getProductById(id);
         String result = JSON.toJSONString(product);
         Map<String,Object> resultMap = new HashMap<String,Object>();
         resultMap.put("result",result);
         System.out.println("getProductById return:"+JSONObject.toJSONString(resultMap));
-        return JSONObject.toJSONString(resultMap);
+        return resultMap;
     }
 
 //    MultipartFile暂不支持
@@ -131,19 +130,19 @@ public class ProductController {
 //        resultMap.put("result",result);
 //        return JSONObject.toJSONString(resultMap);
 //    }
-
-    //for 上传图片
-    @RequestMapping(value = "/getProductIdByName", method = RequestMethod.POST)
-    public String getProductIdByName(@RequestBody ArgsBean argsBean) {
-    	 return new Integer(productService.getProductByName(argsBean).getId()).toString();
-    }
+//
+//    //for 上传图片
+//    @RequestMapping(value = "/getProductIdByName", method = RequestMethod.POST)
+//    public String getProductIdByName(@RequestBody ArgsBean argsBean) {
+//    	 return new Integer(productService.getProductByName(argsBean).getId()).toString();
+//    }
     
     // for record调用
     @RequestMapping(value = "/updateProductById", method = RequestMethod.POST)
-    public String updateProductById(@RequestBody ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String productJsonString = (String)map.get("productJsonString");
+    public String updateProductById(String productJsonString) {
+//        Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//        //TODO 异常处理
+//        String productJsonString = (String)map.get("productJsonString");
         System.out.println("updateProductById:"+productJsonString);
     	Product product=JSONObject.parseObject(productJsonString, Product.class);//JSON字符串转对象
         return new Boolean(productService.updateProduct(product)).toString();

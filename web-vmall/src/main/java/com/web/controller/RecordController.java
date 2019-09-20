@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.web.utils.ArgsBean;
 
+import com.web.utils.HttpUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 public class RecordController {
 
-    private static RestTemplate restTemplate =  new RestTemplate();
+//    private static RestTemplate restTemplate =  new RestTemplate();
 	private String makeFault_instanceIP = null;
 
     private boolean isTestingTPS = false;
@@ -40,11 +41,12 @@ public class RecordController {
     @ResponseBody
     public Map<String,Object> makeFault(String instanceIP){
 
-        String url = "http://"+instanceIP+":8084/order/makeFault";
+        String url = "http://"+instanceIP+":8084/makeFault";
         System.out.println("makeFault:"+url);
         try{
             this.makeFault_instanceIP = instanceIP;
-            restTemplate.postForObject(url,null,String.class);
+//            restTemplate.postForObject(url,null,String.class);
+            HttpUtil.sendPost(url);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -69,10 +71,11 @@ public class RecordController {
             return res;
         }
 
-        String url = "http://"+this.makeFault_instanceIP+":8084/order/stopFault";
+        String url = "http://"+this.makeFault_instanceIP+":8084/stopFault";
         System.out.println("stopFault:"+url);
         try{
-            restTemplate.postForObject(url,null,String.class);
+//            restTemplate.postForObject(url,null,String.class);
+            HttpUtil.sendPost(url);
         }catch (Exception e){
             e.printStackTrace();
             res.put("result","requst error");
@@ -125,9 +128,10 @@ public class RecordController {
         map.put("productId", String.valueOf(productId));
         map.put("counts", String.valueOf(counts));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         //删除购物车记录
         //ShoppingcarController shoppingcarController = new ShoppingcarController();
@@ -149,9 +153,10 @@ public class RecordController {
         map.put("time", time);
         map.put("orderStatus", String.valueOf(orderStatus));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n"+res);
         Map resultMap = (Map)JSON.parse(res);
@@ -166,12 +171,16 @@ public class RecordController {
         Map<String,String> map = new HashMap<String,String>();
         map.put("userId", String.valueOf(userId));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n"+res);
         Map resultMap = (Map)JSON.parse(res);
+        if (resultMap.get("status")!=null && (int)resultMap.get("status") == 500){
+            throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+        }
         return resultMap;
     }
 
@@ -182,9 +191,10 @@ public class RecordController {
         Map<String,String> map = new HashMap<String,String>();
         map.put("orderStatus", String.valueOf(orderStatus));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n"+res);
         Map resultMap = (Map)JSON.parse(res);
@@ -197,12 +207,16 @@ public class RecordController {
         String url = PagesController.recordUrl+"/getAllShoppingRecords";
         Map<String,String> map = new HashMap<String,String>();
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n"+res);
         Map resultMap = (Map)JSON.parse(res);
+        if (resultMap.get("status")!=null && (int)resultMap.get("status") == 500){
+            throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+        }
         return resultMap;
     }
 
@@ -214,12 +228,16 @@ public class RecordController {
         map.put("userId", String.valueOf(userId));
         map.put("productId", String.valueOf(productId));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n"+res);
         Map resultMap = (Map)JSON.parse(res);
+        if (resultMap.get("status")!=null && (int)resultMap.get("status") == 500){
+            throw new RuntimeException("[ERROR]Server error message is [{\"message\":\"Order Not Found\"}].");
+        }
         return resultMap;
 
 

@@ -35,6 +35,7 @@
 
 
         <dependencies>
+
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
@@ -45,6 +46,16 @@
                 <!--<artifactId>spring-boot-starter-log4j</artifactId>-->
             <!--</dependency>-->
 
+            <!-- http -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+            </dependency>
 
             <!--mysql/jdbc-->
             <dependency>

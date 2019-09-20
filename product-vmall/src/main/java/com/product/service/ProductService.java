@@ -22,7 +22,7 @@ public class  ProductService {
     @Autowired
     ProductRepository productRepository;
 
-    private static RestTemplate restTemplate = new RestTemplate();
+//    private static RestTemplate restTemplate = new RestTemplate();
 
     public Map<String, Object> getAllProduct(){
         Iterator<Product> iterator = productRepository.findAll().iterator();
@@ -36,39 +36,40 @@ public class  ProductService {
         resultMap.put("allProducts", allProducts);
         return resultMap;
     }
-    public Map<String, Object> updateProductCounts(ArgsBean argsBean){
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String id = (String)map.get("id");
-        String count = (String)map.get("count");
-        Product product = productRepository.findOne(Integer.valueOf(id));
-        product.setCounts(product.getCounts() - Integer.valueOf(count));
+    public Map<String, Object> updateProductCounts(int id, int count){
+//        Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//        //TODO 异常处理
+//        String id = (String)map.get("id");
+//        String count = (String)map.get("count");
+        Product product = productRepository.findOne(id);
+        product.setCounts(product.getCounts() - count);
         productRepository.save(product);
         return null;
     }
 
      public  Response deleteProduct(ArgsBean argsBean){
-         Map map = (Map) JSONObject.parse(argsBean.getMapString());
-         //TODO 异常处理
-         String id = (String)map.get("productId");
-
-         try {
-        	String url1 = ProductController.evaluationUrl+"/deleteEvaluationByProduct";
-     		//String result1 = HttpUtil.sendGet(url1);
-            String result1 = restTemplate.postForObject(url1,argsBean,String.class);
-
-        	String url2 = ProductController.shoppingcarUrl+"/deleteShoppingCarByProduct";
-     		String result2 = restTemplate.postForObject(url2,argsBean,String.class);
-
-        	String url3 = ProductController.recordUrl+"/deleteShoppingRecordByProductId";
-     		String result3 = restTemplate.postForObject(url3,argsBean,String.class);
-
-             System.out.println("删除商品结果："+result1+"\n"+result2+"\n"+result3);
-     		productRepository.delete(Integer.valueOf(id));
-            return new Response(1, "删除商品成功", null);
-        }catch (Exception e){
-            return new Response(0,"删除商品失败",null);
-        }
+//         Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//         //TODO 异常处理
+//         String id = (String)map.get("productId");
+//
+//         try {
+//        	String url1 = ProductController.evaluationUrl+"/deleteEvaluationByProduct";
+//     		//String result1 = HttpUtil.sendGet(url1);
+//            String result1 = restTemplate.postForObject(url1,argsBean,String.class);
+//
+//        	String url2 = ProductController.shoppingcarUrl+"/deleteShoppingCarByProduct";
+//     		String result2 = restTemplate.postForObject(url2,argsBean,String.class);
+//
+//        	String url3 = ProductController.recordUrl+"/deleteShoppingRecordByProductId";
+//     		String result3 = restTemplate.postForObject(url3,argsBean,String.class);
+//
+//             System.out.println("删除商品结果："+result1+"\n"+result2+"\n"+result3);
+//     		productRepository.delete(Integer.valueOf(id));
+//            return new Response(1, "删除商品成功", null);
+//        }catch (Exception e){
+//            return new Response(0,"删除商品失败",null);
+//        }
+         return null;
      }
 
      public Map<String, Object> addProduct(ArgsBean argsBean){
@@ -104,12 +105,8 @@ public class  ProductService {
          return resultMap;
      }
 
-    public Product getProductById(ArgsBean argsBean){
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String id = (String)map.get("productId");
-        System.out.println("getProductById :"+id);
-        return productRepository.findOne(Integer.valueOf(id));
+    public Product getProductById(int id){
+        return productRepository.findOne(id);
     }
     public List<Product> getProductsByKeyWord(ArgsBean argsBean){
         Map map = (Map) JSONObject.parse(argsBean.getMapString());

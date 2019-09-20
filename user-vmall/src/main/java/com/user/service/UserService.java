@@ -26,18 +26,13 @@ public class UserService {
     @Autowired
     private UserDetailRepository userDetailRepository;
 
-    private static RestTemplate restTemplate = new RestTemplate();
+//    private static RestTemplate restTemplate = new RestTemplate();
 
     public User getUserByName(String name){
         return userRepository.getUserByNameOrEmail(name);
     }
 
-    public Map<String, Object> doLogin(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String userNameOrEmail = (String)map.get("userNameOrEmail");
-        String password = (String)map.get("password");
-
+    public Map<String, Object> doLogin(String userNameOrEmail, String password) {
         System.out.println("我接收到了登录请求" + userNameOrEmail + " " + password);
         String result = "fail";
         User user = userRepository.getUserByNameOrEmail(userNameOrEmail);
@@ -58,19 +53,7 @@ public class UserService {
     }
 
     @Transactional
-    public Map<String, Object> doRegister(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String userName = (String)map.get("userName");
-        String email = (String)map.get("email");
-        String nickName = (String)map.get("nickName");
-        String address = (String)map.get("address");
-        String birthday = (String)map.get("birthday");
-        String password = (String)map.get("password");
-        String phoneNumber = (String)map.get("phoneNumber");
-        String sex = (String)map.get("sex");
-        String postNumber = (String)map.get("postNumber");
-
+    public Map<String, Object> doRegister(String userName, String email, String nickName, String password, String phoneNumber, int sex, String birthday, String postNumber, String address) {
         String result = "fail";
         //这里name和email逻辑有问题
         User user = userRepository.getUserByNameOrEmail(userName);
@@ -113,21 +96,9 @@ public class UserService {
 
 
     @Transactional
-    public Map<String, Object> doUpdate(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String userName = (String)map.get("userName");
-        String email = (String)map.get("email");
-        String nickName = (String)map.get("nickName");
-        String address = (String)map.get("address");
-        String birthday = (String)map.get("birthday");
-        String password = (String)map.get("password");
-        String phoneNumber = (String)map.get("phoneNumber");
-        String sex = (String)map.get("sex");
-        String postNumber = (String)map.get("postNumber");
-
-
-        String result = "fail";
+    public Map<String, Object> doUpdate(String userName, String email, String nickName, String password,
+                                        String phoneNumber, int sex, String birthday, String postNumber, String address) {
+                String result = "fail";
         User user = userRepository.getUserByNameOrEmail(userName);
         user.setEmail(email);
         user.setNickName(nickName);
@@ -159,46 +130,42 @@ public class UserService {
         return resultMap;
     }
 
-    @Transactional
-    public Response deleteUser(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String id = (String)map.get("id");
-        map.put("userId",id);
-        argsBean.setMapString(JSONObject.toJSONString(map));
+//    @Transactional
+//    public Response deleteUser(ArgsBean argsBean) {
+//        Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//        //TODO 异常处理
+//        String id = (String)map.get("id");
+//        map.put("userId",id);
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//
+//        try {
+//
+//            //evaluationDao.deleteEvaluationByUser(id);
+//            String url1 = UserController.evaluationUrl+"/deleteEvaluationByUser";
+//            //String result1 = HttpUtil.sendGet(url1);
+//            String result1 = restTemplate.postForObject(url1,argsBean,String.class);
+//
+//            //shoppingCarDao.deleteShoppingCarByUser(id);
+//            String url2 = UserController.shoppingcarUrl+"/deleteShoppingCarByUser";
+//            String result2 = restTemplate.postForObject(url2,argsBean,String.class);
+//
+//
+//            //shoppingRecordDao.deleteShoppingRecordByUser(id);
+//            String url3 = UserController.recordUrl+"/deleteShoppingRecordByUser";
+//            String result3 = restTemplate.postForObject(url3,argsBean,String.class);
+//
+//            System.out.println("删除用户结果："+result1+"\n"+result2+"\n"+result3);
+//
+//            userDetailRepository.delete(Integer.valueOf(id));
+//            userRepository.delete(Integer.valueOf(id));
+//            return new Response(1, "删除用户成功", null);
+//        }catch (Exception e){
+//            return new Response(0,"删除用户失败",null);
+//        }
+//    }
 
-        try {
-
-            //evaluationDao.deleteEvaluationByUser(id);
-            String url1 = UserController.evaluationUrl+"/deleteEvaluationByUser";
-            //String result1 = HttpUtil.sendGet(url1);
-            String result1 = restTemplate.postForObject(url1,argsBean,String.class);
-
-            //shoppingCarDao.deleteShoppingCarByUser(id);
-            String url2 = UserController.shoppingcarUrl+"/deleteShoppingCarByUser";
-            String result2 = restTemplate.postForObject(url2,argsBean,String.class);
-
-
-            //shoppingRecordDao.deleteShoppingRecordByUser(id);
-            String url3 = UserController.recordUrl+"/deleteShoppingRecordByUser";
-            String result3 = restTemplate.postForObject(url3,argsBean,String.class);
-
-            System.out.println("删除用户结果："+result1+"\n"+result2+"\n"+result3);
-
-            userDetailRepository.delete(Integer.valueOf(id));
-            userRepository.delete(Integer.valueOf(id));
-            return new Response(1, "删除用户成功", null);
-        }catch (Exception e){
-            return new Response(0,"删除用户失败",null);
-        }
-    }
-
-    public Map<String, Object> getUserAddressAndPhoneNumber(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String id = (String)map.get("id");
-
-        UserDetail userDetail = userDetailRepository.findOne(Integer.valueOf(id));
+    public Map<String, Object> getUserAddressAndPhoneNumber(int id) {
+        UserDetail userDetail = userDetailRepository.findOne(id);
         String address = userDetail.getAddress();
         String phoneNumber = userDetail.getPhoneNumber();
         Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -207,24 +174,16 @@ public class UserService {
         return resultMap;
     }
 
-    public Map<String, Object> getUserById(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String id = (String)map.get("id");
-        System.out.println("id is "+id);
-        User user = userRepository.findOne(Integer.valueOf(id));
+    public Map<String, Object> getUserById(int id) {
+        User user = userRepository.findOne(id);
         String result = JSON.toJSONString(user);
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("result", result);
         return resultMap;
     }
 
-    public Map<String, Object> getUserDetailById(ArgsBean argsBean) {
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String id = (String)map.get("id");
-
-        UserDetail userDetail = userDetailRepository.findOne(Integer.valueOf(id));
+    public Map<String, Object> getUserDetailById(int id) {
+        UserDetail userDetail = userDetailRepository.findOne(id);
         String result = JSON.toJSONString(userDetail);
         Map<String, Object> resultMap = new HashMap<String, Object>();
         resultMap.put("result", result);

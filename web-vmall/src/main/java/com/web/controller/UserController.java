@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.web.entity.User;
 import com.web.utils.ArgsBean;
+import com.web.utils.HttpUtil;
 import com.web.utils.RedisService;
 import com.web.utils.Response;
 
@@ -26,7 +27,7 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class UserController {
 
-    private static RestTemplate restTemplate =  new RestTemplate();
+//    private static RestTemplate restTemplate =  new RestTemplate();
 
     @Autowired
     private RedisService redisService ;
@@ -49,9 +50,10 @@ public class UserController {
         map.put("address", address);
 
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
@@ -66,9 +68,11 @@ public class UserController {
         map.put("userNameOrEmail",userNameOrEmail);
         map.put("password",password);
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
+
 
 
         System.out.println("----res:\n" + res);
@@ -106,9 +110,11 @@ public class UserController {
         map.put("postNumber", postNumber);
         map.put("address", address);
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
+
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
@@ -120,7 +126,8 @@ public class UserController {
     public Map<String, Object> getAllUser() {
         String url = PagesController.userUrl + "/getAllUser";
 
-        String res = restTemplate.postForObject(url,null,String.class);
+//        String res = restTemplate.postForObject(url,null,String.class);
+        String res = HttpUtil.sendPost(url);
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
@@ -135,9 +142,11 @@ public class UserController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(id));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
+
 
         JSONObject userJsonString = JSONObject.parseObject(res);
         Response response = JSONObject.toJavaObject(userJsonString, Response.class);
@@ -151,9 +160,10 @@ public class UserController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(id));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
@@ -174,10 +184,10 @@ public class UserController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(id));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        System.out.println("argsBean JSON is \n"+JSONObject.toJSONString(argsBean));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
@@ -191,10 +201,10 @@ public class UserController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("id", String.valueOf(id));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
-
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
         return resultMap;

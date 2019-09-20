@@ -3,6 +3,7 @@ package com.web.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.web.utils.ArgsBean;
+import com.web.utils.HttpUtil;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class EvaluationController {
 
-    private static RestTemplate restTemplate =  new RestTemplate();
+//    private static RestTemplate restTemplate =  new RestTemplate();
 
     @RequestMapping(value = "/addShoppingEvaluation",method = RequestMethod.POST)
     @ResponseBody
@@ -29,9 +30,10 @@ public class EvaluationController {
         map.put("productId", String.valueOf(productId));
         map.put("content", content);
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);
@@ -45,9 +47,10 @@ public class EvaluationController {
         Map<String, String> map = new HashMap<String, String>();
         map.put("productId", String.valueOf(productId));
 
-        ArgsBean argsBean = new ArgsBean();
-        argsBean.setMapString(JSONObject.toJSONString(map));
-        String res = restTemplate.postForObject(url,argsBean,String.class);
+//        ArgsBean argsBean = new ArgsBean();
+//        argsBean.setMapString(JSONObject.toJSONString(map));
+//        String res = restTemplate.postForObject(url,argsBean,String.class);
+        String res = HttpUtil.sendPost(url, map);
 
         System.out.println("----res:\n" + res);
         Map resultMap = (Map) JSON.parse(res);

@@ -7,6 +7,7 @@ import com.record.entity.Product;
 import com.record.entity.ShoppingRecord;
 import com.record.repository.RecordRepository;
 import com.record.utils.ArgsBean;
+import com.record.utils.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +23,7 @@ public class ShoppingRecordService {
     @Autowired
     RecordRepository recordRepository;
 
-    private static RestTemplate restTemplate = new RestTemplate();
+//    private static RestTemplate restTemplate = new RestTemplate();
     private String counts2Thread;
     private int id2Thread;
 
@@ -37,7 +38,8 @@ public class ShoppingRecordService {
                 ArgsBean argsBean2 = new ArgsBean();
                 argsBean2.setMapString(JSONObject.toJSONString(map2));
                 System.out.println("argsBean2:"+argsBean2.getMapString());
-                String result2 = restTemplate.postForObject(url2,argsBean2,String.class);
+//                String result2 = restTemplate.postForObject(url2,argsBean2,String.class);
+                String result2 = HttpUtil.sendPost(url2, map2);
             }catch (Exception e){
                 System.out.println("ERROR ----"+e.getMessage());
             }
@@ -46,13 +48,13 @@ public class ShoppingRecordService {
     }
 
     @Transactional
-    public Map<String, Object> addShoppingRecord(ArgsBean argsBean){
-        //int userId, int productId, int counts
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String userId = (String)map.get("userId");
-        String productId = (String)map.get("productId");
-        String counts = (String)map.get("counts");
+    public Map<String, Object> addShoppingRecord(int userId, int productId, int counts){
+//        //int userId, int productId, int counts
+//        Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//        //TODO 异常处理
+//        String userId = (String)map.get("userId");
+//        String productId = (String)map.get("productId");
+//        String counts = (String)map.get("counts");
 
         System.out.println("我添加了" + userId + " " + productId);
         String result = null;
@@ -61,18 +63,19 @@ public class ShoppingRecordService {
         //String result1 = HttpUtil.sendPost(url1, reqMap);
         String url1 = ShoppingRecordController.productUrl+"/getProductById";
         Map<String, String> map1 = new HashMap<String, String>();
-        map1.put("productId", productId);
+        map1.put("id", String.valueOf(productId));
 
         ArgsBean argsBean1 = new ArgsBean();
         argsBean1.setMapString(JSONObject.toJSONString(map1));
-        String result1 = restTemplate.postForObject(url1,argsBean1,String.class);
+//        String result1 = restTemplate.postForObject(url1,argsBean1,String.class);
+        String result1 = HttpUtil.sendPost(url1, map1);
 
         System.out.println("---------------result1:\n" + result1);
         Map maps = (Map) JSON.parse(result1);
         String productJsonString = (String) maps.get("result");
         Product product = JSONObject.parseObject(productJsonString, Product.class);// JSON字符串转对象
 
-        if (Integer.valueOf(counts) <= product.getCounts()) {
+        if (counts <= product.getCounts()) {
             ShoppingRecord shoppingRecord = new ShoppingRecord();
             shoppingRecord.setUserId(Integer.valueOf(userId));
             shoppingRecord.setProductId(Integer.valueOf(productId));
@@ -86,7 +89,7 @@ public class ShoppingRecordService {
             //product.setCounts(product.getCounts() - Integer.valueOf(counts));
             // TODO 发送请求，updateCounts
             id2Thread = product.getId();
-            counts2Thread =  counts;
+            counts2Thread =  String.valueOf(counts);
             ExecutorService service = Executors.newFixedThreadPool(1);//TPSNum是线程数
             service.execute(new MutliThread());
             service.shutdown();

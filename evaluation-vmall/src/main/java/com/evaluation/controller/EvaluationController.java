@@ -8,6 +8,7 @@ import com.evaluation.service.EvaluationService;
 
 
 import com.evaluation.utils.ArgsBean;
+import com.evaluation.utils.HttpUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class EvaluationController {
     public static String recordUrl;
     public static String evaluationUrl;
 
-    RestTemplate restTemplate = new RestTemplate();
+//    RestTemplate restTemplate = new RestTemplate();
 
     public EvaluationController() {
 //        this.userUrl = "http://127.0.0.1:8081";
@@ -51,12 +52,12 @@ public class EvaluationController {
 	}
     
     @RequestMapping(value = "/addShoppingEvaluation",method = RequestMethod.POST)
-    public String addShoppingEvaluation(@RequestBody ArgsBean argsBean){
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String userId = (String)map.get("userId");
-        String productId = (String)map.get("productId");
-        String content = (String)map.get("content");
+    public String addShoppingEvaluation(int userId, int productId, String content){
+//        Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//        //TODO 异常处理
+//        String userId = (String)map.get("userId");
+//        String productId = (String)map.get("productId");
+//        String content = (String)map.get("content");
 
         System.out.println("我添加了"+userId+" "+productId);
         String result = null;
@@ -66,7 +67,12 @@ public class EvaluationController {
         String url1 = this.recordUrl+"/getUserProductRecord";
 
         //String result1 = HttpUtil.sendGet(url1);
-		String result1 = restTemplate.postForObject(url1,argsBean,String.class);
+//		String result1 = restTemplate.postForObject(url1,argsBean,String.class);
+        Map map = new HashMap();
+        map.put("userId",String.valueOf(userId));
+        map.put("productId",String.valueOf(productId));
+        map.put("content",content);
+        String result1 = HttpUtil.sendPost(url1,map);
         Map resMap = (Map) JSONObject.parse(result1);
         String resGetUserProductRecord = (String)resMap.get("result");
 
@@ -90,10 +96,10 @@ public class EvaluationController {
     }
 
     @RequestMapping(value = "/getShoppingEvaluations",method = RequestMethod.POST)
-    public String getShoppingEvaluations(@RequestBody ArgsBean argsBean){
-        Map map = (Map) JSONObject.parse(argsBean.getMapString());
-        //TODO 异常处理
-        String productId = (String)map.get("productId");
+    public String getShoppingEvaluations(int productId){
+//        Map map = (Map) JSONObject.parse(argsBean.getMapString());
+//        //TODO 异常处理
+//        String productId = (String)map.get("productId");
 
         List<Evaluation> evaluationList = evaluationService.getProductEvaluation(Integer.valueOf(productId));
         String evaluations = JSONArray.toJSONString(evaluationList);
